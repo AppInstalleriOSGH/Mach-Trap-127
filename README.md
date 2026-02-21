@@ -33,7 +33,7 @@ _issue_command:
 ```
 
 ```c
-uint64_t issue_command(uint64_t command, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6, uint64_t arg7, uint64_t arg8);
+uint64_t issue_command(uint64_t command, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6);
 ```
 
 Examples:
@@ -45,44 +45,44 @@ issue_command(0, 0, 0, 0, 0, 0, 0, 0, 0); // get kernel slide
 ```
 ```c
 kern_return_t kreadbuf(uint64_t addr, void* data, size_t size) {
-    return (kern_return_t)issue_command(1, addr, (uint64_t)data, size, 0, 0, 0, 0, 0);
+    return (kern_return_t)issue_command(1, addr, (uint64_t)data, size, 0, 0, 0);
 }
 
 kern_return_t kwritebuf(uint64_t addr, void* data, size_t size) {
-    return (kern_return_t)issue_command(2, addr, (uint64_t)data, size, 0, 0, 0, 0, 0);
+    return (kern_return_t)issue_command(2, addr, (uint64_t)data, size, 0, 0, 0);
 }
 
 int physreadbuf(uint64_t pa, void* data, size_t size) {
     memset(data, 0, size); // fault in page
-    return (int)issue_command(3, pa, (uint64_t)data, size, 0, 0, 0, 0, 0);
+    return (int)issue_command(3, pa, (uint64_t)data, size, 0, 0, 0);
 }
 
 int physwritebuf(uint64_t pa, void* data, size_t size) {
-    return (int)issue_command(4, pa, (uint64_t)data, size, 0, 0, 0, 0, 0);
+    return (int)issue_command(4, pa, (uint64_t)data, size, 0, 0, 0);
 }
 
 uint64_t kcall(uint64_t addr, uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3, uint64_t x4, uint64_t x5, uint64_t x6, uint64_t x7) {
     uint64_t args[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
     uint64_t ret = 0;
-    issue_command(5, addr, (uint64_t)&ret, (uint64_t)args, 0, 0, 0, 0, 0);
+    issue_command(5, addr, (uint64_t)&ret, (uint64_t)args, 0, 0, 0);
     return ret;
 }
 
 uint64_t get_current_task(void) {
     uint64_t value = 0;
-    issue_command(6, (uint64_t)&value, 0, 0, 0, 0, 0, 0, 0);
+    issue_command(6, (uint64_t)&value, 0, 0, 0, 0, 0);
     return value;
 }
 
 uint64_t get_task_pmap(uint64_t task) {
     uint64_t value = 0;
-    issue_command(7, task, (uint64_t)&value, 0, 0, 0, 0, 0, 0);
+    issue_command(7, task, (uint64_t)&value, 0, 0, 0, 0);
     return value;
 }
 
 uint64_t vtophys(uint64_t pmap, uint64_t va) {
     uint64_t value = 0;
-    issue_command(8, pmap, va, (uint64_t)&value, 0, 0, 0, 0, 0);
+    issue_command(8, pmap, va, (uint64_t)&value, 0, 0, 0);
     return value;
 }
 ```

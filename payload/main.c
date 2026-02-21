@@ -1,6 +1,5 @@
 #import <stdio.h>
 #import <stdlib.h>
-#import <dlfcn.h>
 
 #define kern_return_t uint32_t
 
@@ -10,7 +9,6 @@ kern_return_t copyin(const user_addr_t uaddr, void *kaddr, size_t len);
 kern_return_t copyout(const void *kaddr, user_addr_t udaddr, size_t len);
 uint64_t current_task(void);
 uint64_t get_task_pmap(uint64_t task);
-
 uint64_t pmap_find_phys(uint64_t pmap, uint64_t va);
 void bcopy_phys(uint64_t from, uint64_t to, size_t bytes);
 

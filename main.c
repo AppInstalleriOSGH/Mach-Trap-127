@@ -140,7 +140,7 @@ uint64_t find_mach_traps(size_t* trap_size) {
     return 0;
 }
 
-void krw_patch() {
+void trap_patch() {
     krw_init();
     printf("kernel base: 0x%llx\n", gKernelBase);
     printf("kernel slide: 0x%llx\n", gKernelSlide);
@@ -156,7 +156,6 @@ void krw_patch() {
     uint64_t get_task_pmap = kernel_find_symbol("_get_task_pmap");
     uint64_t pmap_find_phys = kernel_find_symbol("_pmap_find_phys");
     uint64_t bcopy_phys = kernel_find_symbol("_bcopy_phys");
-    
     printf("mach_traps: 0x%llx\n", mach_traps);
     printf("text_exec_addr: 0x%llx\n", gKernelTextExec);
     printf("copyin: 0x%llx\n", copyin);
@@ -183,10 +182,10 @@ void krw_patch() {
     kwrite64(trap_entry + 8, rx);
     kwrite64(trap_entry + 16, 0);
     if (trap_size == 32) {
-        kwrite64(trap_entry, 9);
+        kwrite64(trap_entry, 7);
         kwrite64(trap_entry + 24, 0);
     } else if (trap_size == 24) {
-        kwrite8(trap_entry, 9);
+        kwrite8(trap_entry, 7);
         kwrite8(trap_entry + 1, 0);
     } else {
         return;
@@ -195,7 +194,7 @@ void krw_patch() {
 }
 
 void module_entry() {
-    command_register("trap_patch", "patches mach trap 127 for kernel r/w + kcall", krw_patch);
+    command_register("trap_patch", "patches mach trap 127 for kernel r/w + kcall", trap_patch);
 }
 
 char* module_name = "trap_patcher";
