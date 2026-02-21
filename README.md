@@ -59,6 +59,31 @@ int physreadbuf(uint64_t pa, void* data, size_t size) {
 int physwritebuf(uint64_t pa, void* data, size_t size) {
     return (int)issue_command(4, pa, (uint64_t)data, size, 0, 0, 0, 0, 0);
 }
+
+uint64_t kcall(uint64_t addr, uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3, uint64_t x4, uint64_t x5, uint64_t x6, uint64_t x7) {
+    uint64_t args[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
+    uint64_t ret = 0;
+    issue_command(5, addr, (uint64_t)&ret, (uint64_t)args, 0, 0, 0, 0, 0);
+    return ret;
+}
+
+uint64_t get_current_task(void) {
+    uint64_t value = 0;
+    issue_command(6, (uint64_t)&value, 0, 0, 0, 0, 0, 0, 0);
+    return value;
+}
+
+uint64_t get_task_pmap(uint64_t task) {
+    uint64_t value = 0;
+    issue_command(7, task, (uint64_t)&value, 0, 0, 0, 0, 0, 0);
+    return value;
+}
+
+uint64_t vtophys(uint64_t pmap, uint64_t va) {
+    uint64_t value = 0;
+    issue_command(8, pmap, va, (uint64_t)&value, 0, 0, 0, 0, 0);
+    return value;
+}
 ```
 
 ## Credits
