@@ -53,6 +53,7 @@ kern_return_t kwritebuf(uint64_t addr, void* data, size_t size) {
 }
 
 int physreadbuf(uint64_t pa, void* data, size_t size) {
+    memset(data, 0, size); // fault in page
     return (int)issue_command(3, pa, (uint64_t)data, size, 0, 0, 0, 0, 0);
 }
 
@@ -88,7 +89,7 @@ uint64_t vtophys(uint64_t pmap, uint64_t va) {
 
 ## Credits
 
-- Built on **PongoOS** by the [checkra1n team](https://github.com/checkra1n/pongoOS)  
+- Built on [**PongoOS**](https://github.com/checkra1n/pongoOS) by the checkra1n team 
 - This project is independent and **not affiliated** with checkra1n
 
 ---
