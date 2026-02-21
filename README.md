@@ -38,16 +38,15 @@ _issue_command:
 
 ```c
 uint64_t issue_command(uint64_t command, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6);
-```
 
-Examples:
-```c
-issue_command(0x41, 0, 0, 0, 0, 0, 0, 0, 0) == 0x41424344; // check if patched
-```
-```c
-issue_command(0, 0, 0, 0, 0, 0, 0, 0, 0); // get kernel slide
-```
-```c
+int krw_available(void) {
+    return issue_command(0x41, 0, 0, 0, 0, 0, 0) == 0x41424344;
+}
+
+uint64_t getKernelSlide(void) {
+    return issue_command(0, 0, 0, 0, 0, 0, 0);
+}
+
 kern_return_t kreadbuf(uint64_t addr, void* data, size_t size) {
     return (kern_return_t)issue_command(1, addr, (uint64_t)data, size, 0, 0, 0);
 }
