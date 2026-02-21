@@ -1,8 +1,12 @@
 # Mach-Trap-127
 
-Mach-Trap-127 patches **Mach trap 127** and installs a small custom payload that exposes a clean interface for kernel interaction.
+Mach Trap 127 patcher module patches **Mach trap 127** and installs a small custom payload that exposes a clean interface for kernel interaction.
 
 It provides an automated, offset-free alternative to `tfp0` for kernel research and development.
+
+Tested devices:
+- iPhone 6s Plus on iOS 14.3
+- iPod Touch 7th Generation on iOS 15.7.6
 
 ---
 
@@ -20,7 +24,7 @@ It provides an automated, offset-free alternative to `tfp0` for kernel research 
 
 ## Usage
 
-Mach-Trap-127 exposes a single custom syscall via **Mach trap 127**.  
+This patcher exposes a single custom syscall via **Mach trap 127**.  
 All interaction happens through `issue_command`, which routes requests to the kernel payload.
 
 ### `issue_command` trap stub
