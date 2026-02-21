@@ -18,6 +18,20 @@ It provides an automated, offset-free alternative to `tfp0` for kernel research 
 
 ---
 
+## Usage
+
+Mach-Trap-127 exposes a single custom syscall via **Mach trap 127**.  
+All interaction happens through `issue_command`, which routes requests to the kernel payload.
+
+### ARM64 `issue_command` trap stub
+
+```asm
+_issue_command:
+    mov x16, -127
+    svc 0x80
+    ret
+```
+
 ## Credits
 
 - Built on **PongoOS** by the [checkra1n team](https://github.com/checkra1n/pongoOS)  
