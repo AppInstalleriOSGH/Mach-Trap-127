@@ -103,6 +103,7 @@ This code:
 - Patches the kernel
 - Grants full kernel privileges
 - Can panic or hang your device
+- Is a **work in progress**
 
 Intended for research and educational purposes only.
 
