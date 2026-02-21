@@ -32,6 +32,10 @@ _issue_command:
     ret
 ```
 
+```c
+uint64_t issue_command(uint64_t command, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6, uint64_t arg7, uint64_t arg8);
+```
+
 ## Credits
 
 - Built on **PongoOS** by the [checkra1n team](https://github.com/checkra1n/pongoOS)  
