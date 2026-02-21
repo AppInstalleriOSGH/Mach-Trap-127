@@ -23,7 +23,7 @@ It provides an automated, offset-free alternative to `tfp0` for kernel research 
 Mach-Trap-127 exposes a single custom syscall via **Mach trap 127**.  
 All interaction happens through `issue_command`, which routes requests to the kernel payload.
 
-### ARM64 `issue_command` trap stub
+### `issue_command` trap stub
 
 ```asm
 _issue_command:
