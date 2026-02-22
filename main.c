@@ -8,6 +8,7 @@ extern uint64_t xnu_slide_value(struct mach_header_64* header);
 extern uint64_t xnu_rebase_va(uint64_t va);
 extern void* xnu_va_to_ptr(uint64_t va);
 extern uint64_t xnu_ptr_to_va(void* ptr);
+extern void* memmem(const void* big, unsigned long blength, const void* little, unsigned long llength);
 
 uint64_t gKernelBase = 0;
 uint64_t gKernelSlide = 0;
@@ -166,17 +167,24 @@ void trap_patch() {
     printf("bcopy_phys: 0x%llx\n", bcopy_phys);
     
     // write payload
+    void* payload_symbols = memmem(payload, sizeof(payload), (uint64_t[]){0x4141414141414141}, 8);
+    if (payload_symbols == 0) return;
+    uint64_t payload_symbols_offset = payload_symbols - (void*)payload;
     uint64_t rx = gKernelTextExec + 0x1000;
     kwritebuf(rx, payload, sizeof(payload));
-    uint64_t offsets = 64;
-    kwrite64(rx + offsets, gKernelSlide);
-    kwrite64(rx + offsets + 8, copyin);
-    kwrite64(rx + offsets + 16, copyout);
-    kwrite64(rx + offsets + 24, current_task);
-    kwrite64(rx + offsets + 32, get_task_pmap);
-    kwrite64(rx + offsets + 40, pmap_find_phys);
-    kwrite64(rx + offsets + 48, bcopy_phys);
-    
+    uint64_t symbols[] = {
+        gKernelSlide,
+        copyin,
+        copyout,
+        current_task,
+        get_task_pmap,
+        pmap_find_phys,
+        bcopy_phys
+    };
+    for (int i = 0; i < sizeof(symbols) / 8; i++) {
+        kwrite64(rx + payload_symbols_offset + (i * 8), symbols[i]);
+    }
+
     // write trap
     uint64_t trap_entry = mach_traps + (127 * trap_size);
     kwrite64(trap_entry + 8, rx);
