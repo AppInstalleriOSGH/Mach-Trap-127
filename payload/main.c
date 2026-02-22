@@ -1,6 +1,7 @@
 #import <stdio.h>
 #import <stdlib.h>
 
+#define COPYOUT(variable, uaddr) if (uaddr) copyout(&variable, uaddr, sizeof(variable))
 #define kern_return_t uint32_t
 
 uint64_t getKernelSlide(void);
@@ -39,22 +40,22 @@ uint64_t c_start(uint64_t* args) {
         copyin(arg2, kcall_args, sizeof(kcall_args));
         uint64_t (*func)(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6, uint64_t arg7, uint64_t arg8, uint64_t arg9, uint64_t arg10) = (void*)arg1;
         uint64_t ret = func(kcall_args[0], kcall_args[1], kcall_args[2], kcall_args[3], kcall_args[4], kcall_args[5], kcall_args[6], kcall_args[7], kcall_args[8], kcall_args[9]);
-        if (arg3) copyout(&ret, arg3, 8);
+        COPYOUT(ret, arg3);
         return 0;
     }
     if (command == 6) {
         uint64_t task = current_task();
-        if (arg1) copyout(&task, arg1, 8);
+        COPYOUT(task, arg1);
         return 0;
     }
     if (command == 7) {
         uint64_t pmap = get_task_pmap(arg1);
-        if (arg2) copyout(&pmap, arg2, 8);
+        COPYOUT(pmap, arg2);
         return 0;
     }
     if (command == 8) {
         uint64_t phys = vtophys(arg1, arg2);
-        if (arg3) copyout(&phys, arg3, 8);
+        COPYOUT(phys, arg3);
         return 0;
     }
     return 0;
