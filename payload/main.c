@@ -28,7 +28,6 @@ uint64_t c_start(uint64_t* args) {
     uint64_t arg1 = args[1];
     uint64_t arg2 = args[2];
     uint64_t arg3 = args[3];
-    
     if (command == 0x41) return 0x41424344;
     if (command == 0) return getKernelSlide();
     if (command == 1) return copyout((void*)arg1, arg2, arg3);
@@ -36,11 +35,11 @@ uint64_t c_start(uint64_t* args) {
     if (command == 3) return physcopy(arg1, arg2, arg3, 1); // physreadbuf
     if (command == 4) return physcopy(arg1, arg2, arg3, 0); // physwritebuf
     if (command == 5) {
-        uint64_t kcall_args[8] = {0};
-        copyin(arg3, kcall_args, sizeof(kcall_args));
-        uint64_t (*func)(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6, uint64_t arg7, uint64_t arg8) = (void*)arg1;
-        uint64_t ret = func(kcall_args[0], kcall_args[1], kcall_args[2], kcall_args[3], kcall_args[4], kcall_args[5], kcall_args[6], kcall_args[7]);
-        if (arg2) copyout(&ret, arg2, 8);
+        uint64_t kcall_args[10] = {0};
+        copyin(arg2, kcall_args, sizeof(kcall_args));
+        uint64_t (*func)(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6, uint64_t arg7, uint64_t arg8, uint64_t arg9, uint64_t arg10) = (void*)arg1;
+        uint64_t ret = func(kcall_args[0], kcall_args[1], kcall_args[2], kcall_args[3], kcall_args[4], kcall_args[5], kcall_args[6], kcall_args[7], kcall_args[8], kcall_args[9]);
+        if (arg3) copyout(&ret, arg3, 8);
         return 0;
     }
     if (command == 6) {

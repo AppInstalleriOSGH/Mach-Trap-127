@@ -2,8 +2,6 @@
 
 Mach Trap 127 patcher module patches **Mach trap 127** and installs a small custom payload that exposes a clean interface for kernel interaction.
 
-It provides an automated, offset-free alternative to `tfp0` for kernel research and development.
-
 Tested devices:
 - iPhone 6s Plus on iOS 14.3
 - iPod Touch 7th Generation on iOS 15.7.6
@@ -15,7 +13,7 @@ Tested devices:
 - Kernel slide retrieval
 - Kernel read/write (`kreadbuf` / `kwritebuf`)
 - Physical memory read/write (`physreadbuf` / `physwritebuf`)
-- `kcall8` (call arbitrary kernel functions)
+- `kcall` (call arbitrary kernel functions with up to 10 arguments)
 - `current_task`
 - Task → pmap
 - `vtophys` via `pmap_find_phys`
@@ -64,10 +62,9 @@ int physwritebuf(uint64_t pa, void* data, size_t size) {
     return (int)issue_command(4, pa, (uint64_t)data, size, 0, 0, 0);
 }
 
-uint64_t kcall(uint64_t addr, uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3, uint64_t x4, uint64_t x5, uint64_t x6, uint64_t x7) {
-    uint64_t args[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
+uint64_t kcall(uint64_t addr, uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3, uint64_t x4, uint64_t x5, uint64_t x6, uint64_t x7, uint64_t x8, uint64_t x9) {
     uint64_t ret = 0;
-    issue_command(5, addr, (uint64_t)&ret, (uint64_t)args, 0, 0, 0);
+    issue_command(5, addr, (uint64_t)((uint64_t[]){x0, x1, x2, x3, x4, x5, x6, x7, x8, x9}), (uint64_t)&ret, 0, 0, 0);
     return ret;
 }
 

