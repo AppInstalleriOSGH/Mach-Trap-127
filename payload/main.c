@@ -24,6 +24,12 @@ int physcopy(uint64_t pa, uint64_t data, size_t size, int direction) {
     return 1;
 }
 
+size_t my_strlen(char* string) {
+    char* str = string;
+    while (*str) str++;
+    return (uint64_t)str - (uint64_t)string;
+}
+
 uint64_t c_start(uint64_t* args) {
     uint64_t command = args[0];
     uint64_t arg1 = args[1];
@@ -56,6 +62,12 @@ uint64_t c_start(uint64_t* args) {
     if (command == 8) {
         uint64_t phys = vtophys(arg1, arg2);
         COPYOUT(phys, arg3);
+        return 0;
+    }
+    if (command == 9) {
+        if (arg1 == 0) return 0;
+        size_t length = my_strlen((char*)arg1);
+        COPYOUT(length, arg2);
         return 0;
     }
     return 0;

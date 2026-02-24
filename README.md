@@ -17,6 +17,7 @@ Tested devices:
 - `current_task`
 - Task → pmap
 - `vtophys` via `pmap_find_phys`
+- Kernel strlen (makes reading strings from kernel memory easier)
 
 ---
 
@@ -83,6 +84,12 @@ uint64_t get_task_pmap(uint64_t task) {
 uint64_t vtophys(uint64_t pmap, uint64_t va) {
     uint64_t value = 0;
     issue_command(8, pmap, va, (uint64_t)&value, 0, 0, 0);
+    return value;
+}
+
+size_t kernel_strlen(uint64_t addr) {
+    size_t value = 0;
+    issue_command(9, addr, (uint64_t)&value, 0, 0, 0, 0);
     return value;
 }
 ```
