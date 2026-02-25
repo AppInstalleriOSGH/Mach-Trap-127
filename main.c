@@ -195,7 +195,6 @@ void trap_patch() {
     } else {
         return;
     }
-    queue_rx_string("bootx\n");
 }
 
 void module_entry() {
