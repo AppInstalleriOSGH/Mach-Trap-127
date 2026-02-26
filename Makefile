@@ -8,6 +8,9 @@ build: clean
 
 load:
 	@python3 load.py
+	
+jb:
+	@python3 jailbreak.py
 
 clean:
 	@rm -f trap_patcher
