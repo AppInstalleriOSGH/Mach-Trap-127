@@ -21,6 +21,21 @@ Tested devices:
 
 ---
 
+## Loading the module
+
+`load.py` requires the device to be booted into a PongoOS shell with the KPF loaded.
+
+Before running `load.py`, boot the device into PongoOS using:
+
+- **iOS 14**
+  ```checkra1n -P```
+- **iOS 15**
+  ```palera1n -P```
+
+Then run ```python3 load.py```
+
+---
+
 ## Usage
 
 This patcher exposes a single custom syscall via **Mach trap 127**.  
