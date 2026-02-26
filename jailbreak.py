@@ -1,6 +1,5 @@
 import sys
 import usb.core
-import time
 import os
 
 dev = usb.core.find(idVendor=0x05ac, idProduct=0x4141)
@@ -22,10 +21,21 @@ def issue_command(command):
         dev.ctrl_transfer(0x21, 3, 0, 0, command)
     except Exception:
         pass
-        
+
+# jailbreak setup
+issue_command("fuse lock\n")
+issue_command("sep auto\n")
+send_file("/Users/benjamin/Downloads/legacy_kpf") # https://github.com/kok3shidoll/ra1npoc/blob/ios15/headers/legacy_kpf
+issue_command("modload\n")
+send_file("/Users/benjamin/Downloads/legacy_ramdisk") # https://github.com/kok3shidoll/ra1npoc/blob/ios15/headers/legacy_ramdisk
+issue_command("ramdisk\n")
+issue_command("kpf_flags 0x2\n");
+issue_command("xargs -v rootdev=md0\n")
+
+# run patcher
 send_file("trap_patcher")
 issue_command("modload\n")
 issue_command("trap_patch\n")
-time.sleep(0.1)
-print("".join(chr (x) for x in dev.ctrl_transfer(0xa1, 1, 0, 0, 512)))
+
+# boot
 issue_command("bootx\n")
